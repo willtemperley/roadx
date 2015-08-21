@@ -13,7 +13,7 @@ import org.geotools.coverage.grid.io.{GridFormatFinder, OverviewPolicy, Abstract
 object TestResources {
 
   def getTestCostSurface: Iterator[String] = {
-    scala.io.Source.fromFile("src/test/resources/leastcost/cost-7x7").getLines()
+    scala.io.Source.fromFile("src/test/resources/leastcost/cost-6x7").getLines()
   }
 
   def getTestTiffRaster: Raster = {
