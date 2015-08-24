@@ -25,7 +25,7 @@ object GraphVisualization {
 
     try {
 
-      val z = g.mapVertices{case (id, (a,b,c)) => graph.insertVertex(parent, null, c, spaceVertex(a), spaceVertex(b), 20,20, null)}
+      val z = g.mapVertices{case (id, (a,b,c)) => graph.insertVertex(parent, null, c + ":" + id, spaceVertex(b), spaceVertex(a), 20,20, null)}
 //
       val VS = z.vertices.collect().toMap
       VS.foreach(f => graph.addCell(f._2))
