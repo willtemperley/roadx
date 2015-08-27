@@ -1,24 +1,13 @@
 package io.hgis
 
-
 import org.apache.spark.graphx.VertexId
 import org.apache.spark.graphx._
-import org.apache.spark.graphx.lib.ShortestPaths.SPMap
-import scala.reflect.ClassTag
 
 /**
  * Computes shortest paths to the given set of landmark vertices, returning a graph where each
  * vertex attribute is a map containing the shortest-path distance to each reachable landmark.
  */
 object ShortestPaths {
-
-  def main(args: Array[String]) {
-    val x = makeMap()
-
-    println(x)
-  }
-
-  private def makeMap(x: (VertexId, Int)*) = Map(x: _*)
 
   /**
    * Computes shortest paths to the given set of landmark vertices.

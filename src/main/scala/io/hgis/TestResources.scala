@@ -18,7 +18,8 @@ object TestResources {
 
   def getTestTiffRaster: Raster = {
 
-    val file = new File("src/test/resources/test.tif")
+//    val file = new File("src/test/resources/leastcost/cost_test.tif")
+    val file = new File("src/test/resources/leastcost/test_small.tif")
 
     val format = GridFormatFinder.findFormat( file )
     val reader = format.getReader( file )

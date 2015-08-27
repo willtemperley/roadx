@@ -19,13 +19,13 @@ object GraphVisualization {
 
     val frame = new JFrame()
 
-    def spaceVertex(v: Int): Int = v * 60 + 10
+    def spaceVertex(v: Int): Int = v * 100 + 20
 
     graph.getModel.beginUpdate()
 
     try {
 
-      val z = g.mapVertices{case (id, (a,b,c)) => graph.insertVertex(parent, null, c + ":" + id, spaceVertex(b), spaceVertex(a), 20,20, null)}
+      val z = g.mapVertices{case (id, (a,b,c)) => graph.insertVertex(parent, null, c, spaceVertex(b), spaceVertex(a), 30,30, null)}
 //
       val VS = z.vertices.collect().toMap
       VS.foreach(f => graph.addCell(f._2))
@@ -33,7 +33,7 @@ object GraphVisualization {
       val triplets = g.triplets.collect().toList
 
       for (t <- triplets) {
-        graph.insertEdge(parent, null, t.attr, VS.get(t.srcId).get, VS.get(t.dstId).get)
+        graph.insertEdge(parent, null, math.round(t.attr), VS.get(t.srcId).get, VS.get(t.dstId).get)
       }
 
     } finally {
