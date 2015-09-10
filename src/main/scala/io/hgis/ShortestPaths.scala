@@ -16,8 +16,8 @@ object ShortestPaths {
    * @param landmarks the list of landmark vertex ids. Shortest paths will be computed to each
    * landmark.
    *
-   * @return a graph where each vertex attribute is a map containing the shortest-path distance to
-   * each reachable landmark vertex.
+   * @return a graph where each vertex attribute is the shortest-path distance to the nearest landmark vertex
+   *
    */
   def run(graph: Graph[(Int, Int, Int), Double], landmarks: Seq[VertexId]): Graph[Double, Double] = {
     val spGraph = graph.mapVertices { (vid, attr) =>
