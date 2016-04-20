@@ -10,10 +10,21 @@
 
     <properties>
         <hbase.version>0.98.6-cdh5.3.3</hbase.version>
-        <geotools.version>12.4</geotools.version>
+        <geotools.version>13.4</geotools.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.googlecode.princeton-java-algorithms</groupId>
+            <artifactId>algorithms</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>io.hgis</groupId>-->
+            <!--<artifactId>hbase-mr</artifactId>-->
+            <!--<version>0.1-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.esri.geometry</groupId>
