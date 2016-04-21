@@ -1,5 +1,9 @@
 package org.roadlessforest.egbis
 
+import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
+
 import edu.princeton.cs.algorithms._
 import edu.princeton.cs.introcs.{In, StdOut}
 import org.apache.spark.graphx.{Edge, VertexId}
@@ -29,7 +33,7 @@ object RoadX {
 
 //    val ans = tile.edges.count(f => true)
 
-    val graph = new Digraph(tile.filteredVertices.length) //fixme
+    val graph = new Digraph(tile.nV)
 
     for (e <- tile.edges) {
       graph.addEdge(e.srcId.toInt, e.dstId.toInt)
@@ -41,6 +45,25 @@ object RoadX {
 
     println(nComponents)
 
+    /*
+    Extract
+     */
+    val img: BufferedImage = new BufferedImage(ras.getWidth, ras.getHeight, BufferedImage.TYPE_USHORT_GRAY)
+    val outRas = img.getRaster
+//    val testVals: Array[Int] = (0 until (ras.getWidth * ras.getHeight)).map(f=> 101).toArray
+//    outRas.setPixels(0, 0, ras.getWidth, ras.getHeight, testVals)
+
+    for (v <- 0 until graph.V) {
+      val componentId = scc.id(v)
+      val sub: (Long, Long) = tile.ind2sub(tile.idToVertex(v))
+
+      val array = Array(componentId+1)
+      //fixme why??
+      outRas.setPixel(sub._2.toInt, sub._1.toInt, array)
+
+    }
+
+    ImageIO.write(img, "TIFF", new File("E:/tmp/outras4.tif"))
 
     // Iterator[(Int, VertexId)]
 //    val z = tile.vertexList.map()
