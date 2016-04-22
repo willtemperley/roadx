@@ -1,5 +1,6 @@
 package org.roadlessforest.egbis
 
+import java.awt.geom.Point2D
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -7,7 +8,7 @@ import javax.imageio.ImageIO
 import edu.princeton.cs.algorithms._
 import edu.princeton.cs.introcs.{In, StdOut}
 import org.apache.spark.graphx.{Edge, VertexId}
-import org.roadlessforest.TestResources
+import org.roadlessforest.{ExportUtils, TestResources}
 import org.roadlessforest.terracost.Tile
 
 /**
@@ -28,10 +29,10 @@ object RoadX {
 
     /*
     Filtered to secondary and regrowth forest types
+
+
      */
     val tile = new GridGraph(ras, f => f == secondary || f == regrowth)
-
-//    val ans = tile.edges.count(f => true)
 
     val graph = new Digraph(tile.nV)
 
@@ -42,49 +43,52 @@ object RoadX {
     val scc = new TarjanSCC(graph)
 
     val nComponents = scc.count()
-
     println(nComponents)
+
+    /*
+    Basic morphology
+
+    Calculate the in-degree of the vertices (also out-degree?)
+
+
+    */
+
+
+//    scc.
 
     /*
     Extract
      */
-    val img: BufferedImage = new BufferedImage(ras.getWidth, ras.getHeight, BufferedImage.TYPE_USHORT_GRAY)
+    val img = new BufferedImage(ras.getWidth, ras.getHeight, BufferedImage.TYPE_USHORT_GRAY)
     val outRas = img.getRaster
-//    val testVals: Array[Int] = (0 until (ras.getWidth * ras.getHeight)).map(f=> 101).toArray
-//    outRas.setPixels(0, 0, ras.getWidth, ras.getHeight, testVals)
 
     for (v <- 0 until graph.V) {
       val componentId = scc.id(v)
-      val sub: (Long, Long) = tile.ind2sub(tile.idToVertex(v))
 
-      val array = Array(componentId+1)
-      //fixme why??
-      outRas.setPixel(sub._2.toInt, sub._1.toInt, array)
+      val vertexId = tile.idToVertex(v)
+
+      //fixme vertex id shouldn't be larger than the array size.
+//      val pix = tile.pixels(vertexId.toInt)
+//      if (!(pix == secondary || pix == regrowth)) {
+//        println(pix)
+//        throw new RuntimeException("there's something happening here, what it is ain't exactly clear")
+//      }
+
+      val sub: (Long, Long) = tile.ind2sub(vertexId)
+
+      val array = Array(componentId + 1)
+
+      //fixme why is the y index incorrect?
+      val y = ras.getHeight - sub._1.toInt -1
+      outRas.setPixel(sub._2.toInt, y, array)
 
     }
 
-    ImageIO.write(img, "TIFF", new File("E:/tmp/outras4.tif"))
+    //    ExportUtils.writeGeoTiff(outRas, new File("E:/tmp/roadx/scc.tif"))
+    val orig = new Point2D.Double(-9.3417715 + (0.00026949 / 2), 5.76915976 + (0.00026949 / 2) - (0.00026949 * ras.getHeight))
+    ImageIO.write(img, "TIFF", new File("E:/tmp/roadx/scc.tif"))
+    ExportUtils.writeTFWfile(new File("E:/tmp/roadx/scc.tfw"), orig, 0.00026949)
 
-    // Iterator[(Int, VertexId)]
-//    val z = tile.vertexList.map()
-
-
-//    (0 until tile.nV) // vertices
-
-
-
-
-    //      edgeWeightedDigraph.addEdge(new DirectedEdge(e.srcId.toInt, e.dstId.toInt, e.attr))
-//    scc.
-
-//    val e = edgeWeightedDigraph.
-//    val n = e.from()
-//
-//    graph.
-//    val dfs = new DepthFirstSearch(graph, )
-//    val edge: Edge[Double] = tile.edges.next()
-
-//    val x = new
   }
 
 

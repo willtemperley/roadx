@@ -32,7 +32,7 @@ class TestGridGraph {
       val idx = gridGraph.sub2ind(coord._1, coord._2)
       val sub = gridGraph.ind2sub(idx)
 
-      println(idx)
+      println(coord)
       println(sub)
 
       Assert.assertEquals(coord, sub)

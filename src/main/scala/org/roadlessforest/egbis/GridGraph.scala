@@ -8,6 +8,10 @@ import scala.collection.JavaConversions.mapAsScalaMap
 
 /**
   * Created by willtemperley@gmail.com on 09-Mar-16.
+  *
+  * todo - does it need
+  * todo - find odd behaviour with
+  *
   */
 
 class GridGraph(raster: Raster, includePixel: (Int => Boolean) = (x: Int) => true) {
@@ -70,26 +74,6 @@ class GridGraph(raster: Raster, includePixel: (Int => Boolean) = (x: Int) => tru
    */
   val idToVertex = vertexToID.map(_.swap)
 
-  //FIXME need to get VALUE for id
-//  def getValueForId(id: Int) = ind2sub(vertexToID.get(id))
-//  def
-
-//  println(pixMap)
-
-//  val pixMap2 =
-//    vertices.zipWithIndex
-
-//      .filter(f => includePixel(f._2._3))
-//      .map(_._1).zipWithIndex.toMap
-
-
-//  todo test ... does the SCC alg work with missing nodes
-//  val nV = rows * cols
-
-//  val vMap = potentialVertices.map(_._1).toArray
-
-//  val vertexList: Iterator[(VertexId, (Int, Int, Int))] = potentialVertices.map(f => f)
-//  val
 
   /*
   Only include edges of interest.
