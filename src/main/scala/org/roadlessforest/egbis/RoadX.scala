@@ -6,10 +6,7 @@ import java.io.File
 import javax.imageio.ImageIO
 
 import edu.princeton.cs.algorithms._
-import edu.princeton.cs.introcs.{In, StdOut}
-import org.apache.spark.graphx.{Edge, VertexId}
 import org.roadlessforest.{ExportUtils, TestResources}
-import org.roadlessforest.terracost.Tile
 
 /**
   * Created by willtemperley@gmail.com on 14-Apr-16.
@@ -29,12 +26,10 @@ object RoadX {
 
     /*
     Filtered to secondary and regrowth forest types
-
-
      */
     val tile = new GridGraph(ras, f => f == secondary || f == regrowth)
 
-    val graph = new Digraph(tile.nV)
+    val graph = new Digraph(tile.vertices.size)
 
     for (e <- tile.edges) {
       graph.addEdge(e.srcId.toInt, e.dstId.toInt)
@@ -47,14 +42,10 @@ object RoadX {
 
     /*
     Basic morphology
-
     Calculate the in-degree of the vertices (also out-degree?)
-
-
     */
 
 
-//    scc.
 
     /*
     Extract
@@ -64,8 +55,7 @@ object RoadX {
 
     for (v <- 0 until graph.V) {
       val componentId = scc.id(v)
-
-      val vertexId = tile.idToVertex(v)
+      val vertexId = tile.vertexIdToIndex(v)
 
       //fixme vertex id shouldn't be larger than the array size.
 //      val pix = tile.pixels(vertexId.toInt)
@@ -83,6 +73,8 @@ object RoadX {
       outRas.setPixel(sub._2.toInt, y, array)
 
     }
+
+
 
     //    ExportUtils.writeGeoTiff(outRas, new File("E:/tmp/roadx/scc.tif"))
     val orig = new Point2D.Double(-9.3417715 + (0.00026949 / 2), 5.76915976 + (0.00026949 / 2) - (0.00026949 * ras.getHeight))

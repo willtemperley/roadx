@@ -2,27 +2,22 @@ package org.roadlessforest.egbis
 
 import java.awt.image.Raster
 
-import org.apache.spark.graphx.{Edge, VertexId}
-
-import scala.collection.JavaConversions.mapAsScalaMap
-
 /**
   * Created by willtemperley@gmail.com on 09-Mar-16.
   *
-  * todo - does it need
-  * todo - find odd behaviour with
+  * Given an image, creates an 8-connnected grid-graph
+  *
+  * TODO: easily customized
   *
   */
-
 class GridGraph(raster: Raster, includePixel: (Int => Boolean) = (x: Int) => true) {
-
 
   /*
   Array subscripts to position in array
    */
-  def sub2index(cols: Int)(r: Int, c: Int): VertexId = c * cols + r
+  def sub2index(cols: Int)(r: Int, c: Int): PixelIndex = c * cols + r
 
-  def index2sub(cols: Int)(v: VertexId): (Long, Long) =  {
+  def index2sub(cols: Int)(v: PixelIndex): (Long, Long) =  {
     val x = v % cols //
     val y = (v - x) / cols
 
@@ -51,29 +46,27 @@ class GridGraph(raster: Raster, includePixel: (Int => Boolean) = (x: Int) => tru
   /*
   the vertex values are row, column and cost value
    */
-  val vertices: Seq[(VertexId, (Int, Int, Int))] = pixelRows
+  private val pixelIndexToPixel: Seq[(PixelIndex, (Int, Int, Int))] = pixelRows
     .flatMap {case(row, rowIdx) => row.zipWithIndex //zips with the column idx
-    .map {case (costVal, colIdx) => (sub2ind(rowIdx, colIdx), (rowIdx, colIdx, costVal))}}
+    .map {case (costVal, colIdx) => (sub2ind(colIdx, rowIdx), (colIdx, rowIdx, costVal))}}
+    .filter(f => includePixel(f._2._3))
     .toSeq
 
   /*
-  Vertex id to new vertex id
+  Vertex id to new vertexId, which is the zipped index
   */
-  val vertexToID: Map[VertexId, Int] =
-    vertices
-      .filter(f => includePixel(f._2._3))
+  val indexToVertexId: Map[PixelIndex, VertexId] =
+    pixelIndexToPixel
       .map(_._1).zipWithIndex.toMap
-
-  /*
-  Number of interesting vertices
-   */
-  val nV = vertexToID.size
 
   /*
   Flip the map
    */
-  val idToVertex = vertexToID.map(_.swap)
+  val vertexIdToIndex: Map[VertexId, PixelIndex]
+  = indexToVertexId.map(_.swap)
 
+
+  val vertices = pixelIndexToPixel.map(f => (indexToVertexId(f._1), f._2))
 
   /*
   Only include edges of interest.
@@ -82,32 +75,31 @@ class GridGraph(raster: Raster, includePixel: (Int => Boolean) = (x: Int) => tru
 
   Trouble is, we don't know the order
   */
-  def getEdge(r0: Int, c0: Int, r1: Int, c1: Int): Seq[Edge[Double]] = {
+  def getEdge(r0: Int, c0: Int, r1: Int, c1: Int): Seq[Edge] = {
 
     val idx0 = sub2ind(r0, c0)
 
     val idx1 = sub2ind(r1, c1)
-//    val diag = (r0 != r1) && (c0 != c1)
 
+//    val diag = (r0 != r1) && (c0 != c1)
 //    val otherPixVal = pixels(idx1.toInt)
 
+    if (indexToVertexId.contains(idx0) && indexToVertexId.contains(idx1)) {
 
-    if (vertexToID.contains(idx0) && vertexToID.contains(idx1)) {
-
-      val vertexId0 = vertexToID(idx0)
-      val vertexId1 = vertexToID(idx1)
+      val vertexId0: Int = indexToVertexId(idx0)
+      val vertexId1: Int = indexToVertexId(idx1)
 
       return Seq(
-        Edge(vertexId0, vertexId1, 1),
-        Edge(vertexId1, vertexId0, 1)
+        new Edge((vertexId0, vertexId1, 1)),
+        new Edge((vertexId1, vertexId0, 1))
       )
     }
     Seq.empty
   }
 
 
-  val edges: Seq[Edge[Double]] =
-    vertices.flatMap{ case (vid, (r,c,v)) =>
+  val edges: Seq[Edge] =
+    pixelIndexToPixel.flatMap{ case (vid, (r,c,v)) =>
       (if (r + 1 < rows)
         { getEdge(r, c, r + 1, c) } else { Seq.empty }) ++
         (if (c + 1 < cols)
@@ -117,5 +109,9 @@ class GridGraph(raster: Raster, includePixel: (Int => Boolean) = (x: Int) => tru
         (if (c - 1 >= 0 && r + 1 < rows)
         { getEdge(r, c, r + 1, c - 1) } else { Seq.empty })
     }
+
+  val allVs = edges.map(_.srcId) ++ edges.map(_.dstId)
+
+  val vertexDegree: Map[VertexId, Int] = allVs.groupBy(identity).mapValues(_.size)
 
 }

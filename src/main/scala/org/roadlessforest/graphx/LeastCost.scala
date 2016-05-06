@@ -4,6 +4,7 @@ import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 import org.roadlessforest.TestResources
+import org.roadlessforest.mxgraph.GraphVisualization
 
 // To make some of the examples work we will also need RDD
 

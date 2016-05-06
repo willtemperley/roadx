@@ -42,10 +42,16 @@ object ExportUtils {
 
   }
 
-  def writeTFWfile(outFile: File, pt: Point2D.Double, pixelSize: Double): Unit = {
+  def writeTFWfile(outFile: File, pt: Point2D.Double, pixelSize: Double, pixShift: Boolean = false): Unit = {
 
     val pw = new PrintWriter(outFile)
 
+    //Sometimes we need to move the origin half a pixel down and right
+    if (pixShift) {
+
+      pt.x = pt.x + (pixelSize / 2)
+      pt.y = pt.y + (pixelSize / 2)
+    }
 
     //    Line 1: A: pixel size in the x-direction in map units/pixel
     //    Line 2: D: rotation about y-axis

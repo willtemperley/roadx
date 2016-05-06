@@ -4,6 +4,7 @@ import java.awt.image.Raster
 
 import org.junit.{Assert, Test}
 import org.roadlessforest.TestResources
+import org.roadlessforest.mxgraph.GraphVisualization
 
 /**
   * Created by willtemperley@gmail.com on 18-Apr-16.
@@ -37,6 +38,24 @@ class TestGridGraph {
 
       Assert.assertEquals(coord, sub)
     }
+
+  }
+
+  @Test
+  def smallImgTest(): Unit = {
+
+    val ras = TestResources.getTestRaster("rasters/oblong.tif")
+    /*
+     */
+    val tile = new GridGraph(ras, f => f != 1)
+
+    GraphVisualization.showDigraph(tile)
+//    for (pr <- tile.pixelRows) {
+//      print(pr._2)
+//      print("=")
+//      print(pr._1)
+//    }
+
 
   }
 }

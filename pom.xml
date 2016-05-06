@@ -11,9 +11,23 @@
     <properties>
         <hbase.version>0.98.6-cdh5.3.3</hbase.version>
         <geotools.version>13.4</geotools.version>
+        <gs.version>1.1.1</gs.version>
+        <jung.version>2.1</jung.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-samples</artifactId>
+            <version>${jung.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jung</groupId>
+            <artifactId>jung-visualization</artifactId>
+            <version>${jung.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.googlecode.princeton-java-algorithms</groupId>
@@ -25,6 +39,11 @@
             <!--<artifactId>hbase-mr</artifactId>-->
             <!--<version>0.1-SNAPSHOT</version>-->
         <!--</dependency>-->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <version>0.4-rc3.8</version>
+            <artifactId>deeplearning4j-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.esri.geometry</groupId>
